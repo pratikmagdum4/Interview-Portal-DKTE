@@ -2,6 +2,7 @@ import React from "react";
 import { StudentMale } from '@/assets/';
 import { AdministratorMale } from '@/assets/';
 import NavBar from "../NavBar/NavBar"
+import '@/App.css'
 function SignUpPage() {
     return (
         <div>
@@ -13,7 +14,7 @@ function SignUpPage() {
 
                 <button
                     onClick={() => window.location.href = '/StudentSignUp'}
-                    className="flex flex-col items-center bg-yellow-400 dark:bg-yellow-600 rounded-lg p-4 shadow-lg">
+                    className="flex flex-col items-center bg-yellow-400 dark:bg-yellow-600 rounded-lg p-4 shadow-lg animate-slideFromLeft">
                     <img
                         src={StudentMale}
                         alt="Student Login"
@@ -23,7 +24,7 @@ function SignUpPage() {
                 </button>
                 <button
                     onClick={() => window.location.href = '/AdminSignUp'}
-                    className="ml-4 flex flex-col items-center bg-yellow-400 dark:bg-yellow-600 rounded-lg p-4 shadow-lg">
+                    className="ml-4 flex flex-col items-center bg-yellow-400 dark:bg-yellow-600 rounded-lg p-4 shadow-lg animate-slideFromLeft">
                     <img
                         src={AdministratorMale}
                         alt="Admin Login"

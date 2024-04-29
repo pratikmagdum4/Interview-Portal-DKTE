@@ -6,7 +6,7 @@ function StudentSignUp() {
     return (
         <div>
             <div> <NavBar /></div>
-        <div className="white text-white font-sans ">
+            <div className="white text-white font-sans animate-slideFromBottom ">
            
             <div className="flex justify-center items-center min-h-screen">
                 <div className="w-full max-w-4xl p-8 bg-zinc-800 rounded-lg shadow-lg">

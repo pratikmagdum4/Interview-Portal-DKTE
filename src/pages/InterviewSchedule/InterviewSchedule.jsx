@@ -12,7 +12,7 @@ function InterviewSchedule() {
                     <a href="#" className="text-white hover:text-zinc-300">Contact</a>
                     <div className="relative">
                         <button className="bg-blue-500 rounded-full w-8 h-8 flex items-center justify-center">
-                            <img src="https://placehold.co/32x32" alt="Profile" className="rounded-full" />
+                            <img src="" alt="Profile" className="rounded-full" />
                         </button>
                         <div className="absolute right-0 mt-10 hidden bg-zinc-700 p-2 rounded-md">
                             <a href="#" className="block text-white hover:bg-zinc-600 p-2">Logout</a>

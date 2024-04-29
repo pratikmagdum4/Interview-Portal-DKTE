@@ -1,28 +1,29 @@
-import { MaleUser } from '@/assets/';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import NavBar from "../NavBar/NavBar"
-import React, { useState } from 'react';
-
-// Sample student data
-const studentsData = [
-    { id: 1, name: 'John Doe', prn: '12345', branch: 'CSE - AI', class: 'TY' },
-    { id: 2, name: 'Jane Doe', prn: '23456', branch: 'ECE', class: 'FY' },
-    { id: 3, name: 'Alice Smith', prn: '34567', branch: 'CSE - AI', class: 'TY' },
-    { id: 4, name: 'Bob Johnson', prn: '45678', branch: 'ECE', class: 'TY' },
-    { id: 5, name: 'Emma Brown', prn: '56789', branch: 'MECH', class: 'FY' },
-    { id: 6, name: 'Michael Wilson', prn: '67890', branch: 'CSE - AI', class: 'FY' },
-    { id: 7, name: 'Sophia Lee', prn: '78901', branch: 'ECE', class: 'TY' },
-    { id: 8, name: 'David Martinez', prn: '89012', branch: 'CSE - AI', class: 'FY' },
-    { id: 9, name: 'Olivia Garcia', prn: '90123', branch: 'MECH', class: 'TY' },
-    { id: 10, name: 'James Rodriguez', prn: '01234', branch: 'CSE - AI', class: 'FY' }
-];
+import { MaleUser } from '@/assets/';
 
 function Students() {
-    // State for search input value and selected branch and class
     const [searchInput, setSearchInput] = useState('');
     const [selectedBranch, setSelectedBranch] = useState('');
     const [selectedClass, setSelectedClass] = useState('');
+    const [studentsData, setStudentsData] = useState([]);
 
-    // Filtered students based on search input and selected branch and class
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            //  GET request 
+            const response = await axios.get('');
+            //  fetched data 
+            setStudentsData(response.data);
+        } catch (error) {
+            console.error('Error fetching the data:', error);
+        }
+    };
+
     const filteredStudents = studentsData.filter(student =>
         student.prn.includes(searchInput) &&
         (selectedBranch === '' || student.branch === selectedBranch) &&
@@ -42,14 +43,12 @@ function Students() {
                             <option value="">All Branches</option>
                             <option value="CSE - AI">CSE - AI</option>
                             <option value="ECE">ECE</option>
-                            
                         </select>
                         <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="p-2 rounded border border-zinc-300">
                             <option value="">All Classes</option>
                             <option value="TY">TY</option>
                             <option value="SY">SY</option>
                             <option value="FY">FY</option>
-                            
                         </select>
                     </div>
                 </div>
@@ -75,55 +74,3 @@ function Students() {
 }
 
 export default Students;
-
-
-// import React, { useEffect } from "react";
-
-// function Students() {
-//     useEffect(() => {
-//         // Wait for the DOM to fully load
-//         document.addEventListener('DOMContentLoaded', () => {
-//             const searchInput = document.querySelector('input[type="text"]');
-//             const students = document.querySelectorAll('.bg-white');
-
-//             if (!searchInput) return; // Check if searchInput exists
-
-//             searchInput.addEventListener('input', () => {
-//                 const searchValue = searchInput.value.toLowerCase();
-
-//                 students.forEach(student => {
-//                     const name = student.querySelector('.font-semibold').textContent.toLowerCase();
-//                     if (name.includes(searchValue)) {
-//                         student.style.display = 'block';
-//                     } else {
-//                         student.style.display = 'none';
-//                     }
-//                 });
-//             });
-
-//             // Clean up event listener on component unmount
-//             return () => {
-//                 searchInput.removeEventListener('input');
-//             };
-//         });
-//     }, []); // Run effect only once on component mount
-
-//     return (
-//         <div className="mt-6">
-//             <div className="bg-white p-4 rounded-lg shadow-md">
-//                 <div className="flex items-center space-x-4 py-2 border-b border-zinc-200">
-//                     <img src={MaleUser} alt="Profile" className="rounded-full w-10 h-10" />
-//                     <div className="flex-1">
-//                         <p className="font-semibold">firstname lastname</p>
-//                         <p className="text-sm text-zinc-600">PRN number</p>
-//                     </div>
-//                     <p className="text-sm">branch</p>
-//                     <p className="text-sm">class</p>
-//                     <button className="bg-blue-500 text-white px-4 py-2 rounded">Schedule meeting</button>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
-
-// export default Students;

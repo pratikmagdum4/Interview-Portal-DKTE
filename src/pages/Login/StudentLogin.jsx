@@ -5,7 +5,7 @@ function StudentLogin() {
     return (
         <div>
             <div> <NavBar /></div>
-            <div className="flex justify-center items-center h-screen">
+            <div className="flex justify-center items-center h-screen animate-slideFromBottom ">
 
                 <div className="bg-zinc-800 p-8 rounded-lg w-96">
                     <h2 className="text-white text-2xl mb-6 border-b border-zinc-600 pb-2 flex justify-center" id="title"> Student Login</h2>

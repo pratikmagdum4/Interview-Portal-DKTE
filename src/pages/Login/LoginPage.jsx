@@ -15,7 +15,7 @@ function LoginPage() {
 
                 <button
                     onClick={() => window.location.href = '/StudentLogin'}
-                    className="flex flex-col items-center bg-yellow-400 dark:bg-yellow-600 rounded-lg p-4 shadow-lg">
+                    className="flex flex-col items-center bg-yellow-400 dark:bg-yellow-600 rounded-lg p-4 shadow-lg animate-slideFromLeft">
                     <img
                         src={StudentMale}
                         alt="Student Login"
@@ -26,7 +26,7 @@ function LoginPage() {
                 </button>
                 <button
                     onClick={() => window.location.href = '/AdminLogin'}
-                    className="ml-4 flex flex-col items-center bg-yellow-400 dark:bg-yellow-600 rounded-lg p-4 shadow-lg">
+                    className="ml-4 flex flex-col items-center bg-yellow-400 dark:bg-yellow-600 rounded-lg p-4 shadow-lg animate-slideFromLeft">
                     <img
                         src={AdministratorMale}
                         alt="Admin Login"
