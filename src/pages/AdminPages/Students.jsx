@@ -80,6 +80,9 @@ function Students() {
                 <div className="bg-yellow-400 p-5 rounded-lg shadow-md">
                     <div className="flex gap-4 mb-4">
                         <input type="text" placeholder="Search by PRN" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} className="flex-1 p-2 rounded border border-zinc-300" />
+                        
+                    </div>
+                    <div className='flex space-x-4'>
                         <select value={selectedBranch} onChange={(e) => setSelectedBranch(e.target.value)} className="p-2 rounded border border-zinc-300">
                             <option value="">All Branches</option>
                             <option value="CSE - AI">CSE - AI</option>
