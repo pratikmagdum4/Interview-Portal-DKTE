@@ -11,7 +11,7 @@ function Students() {
         { label: 'Home', url: '/' },
         { label: 'Students', url: '/students' },
         { label: 'Schedules', url: '/schedules' },
-        { label: 'Contact', url: '/contact' },
+        { label: 'Contact', url: '/' },
     ];
 
     const [searchInput, setSearchInput] = useState('');
@@ -72,12 +72,14 @@ function Students() {
     return (
         <>
             <NavBar links={links} />
+
             <div className="bg-zinc-100">
                 <div className="container mx-auto px-4">
                     <header className="py-5">
                         <h1 className="text-3xl font-bold text-center">Students</h1>
                     </header>
-                    <div className="bg-yellow-400 p-5 rounded-lg shadow-md">
+                    <div>
+                        <div className="bg-yellow-400 p-5 rounded-lg  shadow-md  fixed top-20 left-0 w-full   z-50">
                         <div className="flex gap-4 mb-4 mr-3">
                             <input type="text" placeholder="Search by PRN" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} className="flex-1 p-2 rounded border border-zinc-300" />
 
@@ -96,7 +98,8 @@ function Students() {
                             </select>
                         </div>
                     </div>
-                    <div className="mt-6">
+                    </div>
+                    <div className="mt-20 ">
                         {filteredStudents.map(student => (
                             <div key={student.id} className="bg-white p-4 rounded-lg shadow-md mb-4">
                                 <div className="flex items-center space-x-4 py-2 border-b border-zinc-200">

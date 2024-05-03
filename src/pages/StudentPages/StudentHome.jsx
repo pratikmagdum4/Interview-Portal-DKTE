@@ -10,21 +10,21 @@ const PROFILE_MENU_CLASS = 'absolute right-0 top-full bg-white text-black w-32 p
 
 
 const MainContent = () => {
-   
+
     return (
         <>
             <div className=" flex-1 p-10 justify-center items-center">
                 <div className=" flex justify-center items-center ">
-                <div className="StudentHome flex  space-x-4 ">
-                    <button className={BUTTON_CLASS}>Today's Interview</button>
-                    <button className={BUTTON_CLASS}>Upcoming Interview</button>
+                    <div className="StudentHome flex  space-x-4 ">
+                        <button className={`but1 ${BUTTON_CLASS} mr-2`}>Today's Interview</button>
+                        <button className={BUTTON_CLASS}>Upcoming Interview</button>
                         <button className={`${BUTTON_CLASS} mr-2`}>Interviews History</button>
+                    </div>
                 </div>
-            </div>
                 <div className="mt-10 flex justify-center">
                     <img src={StudentHomePicture} alt="Interview Illustration" />
+                </div>
             </div>
-        </div>
         </>
     );
 };
@@ -37,7 +37,7 @@ const StudentHome = () => {
         { label: 'Contact', url: '/' }
     ];
     const drop = true;
-    
+
     return (
         <>
             <NavBar links={links} drop={drop} />
