@@ -10,28 +10,28 @@ function LoginForm({ title, fields, formData, onSubmit }) {
     const [showPassword, setShowPassword] = useState(false);
     const [userExists, setUserExists] = useState(true); // State variable to track user existence
 
-    // Handle form input change
+    //  form input change
     const handleChange = (e) => {
         const { name, value } = e.target;
         // Update formValues state to reflect the changes
         setFormValues({ ...formValues, [name]: value });
     };
 
-    // Handle toggle password visibility
+    // toggle password visibility
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
-    // Handle form submission
+    //  form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Make Axios POST request to your backend
+            //  Axios POST    
             const response = await axios.post("http://localhost:5000/login", formValues);
             console.log("Response from server:", response.data);
             if (response.data.userExists) {
                 setUserExists(true);
-                // Handle success, maybe redirect or show a success message
+                //  success
                 console.log("Form values:", formValues);
                 toast.success('Login successful');
                 onSubmit(response.data);
@@ -40,7 +40,7 @@ function LoginForm({ title, fields, formData, onSubmit }) {
             }
         } catch (error) {
             console.error("Error submitting form:", error);
-            // Handle error, maybe show an error message to the user
+            //  error
         }
     };
 
