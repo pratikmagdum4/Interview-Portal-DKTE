@@ -12,7 +12,7 @@ const Login = () => {
     // State to store user details
     const [user, setUser] = useState(null);
 
-    // Function to fetch user details after login
+    //   fetch user details after login
     const fetchUserDetails = async () => {
         //  backend API endpoint to fetch user details
         const response = await fetch('/api/user');
@@ -268,7 +268,7 @@ const UserProfile = () => {
             <div className="max-w-4xl mx-auto p-5">
                 <div className="flex items-center bg-yellow-400 p-4 rounded-lg mb-6">
                     <img src={  ProfileImage} alt="User Profile" className="rounded-full w-10 h-10" />
-                    <span className="ml-3 font-semibold text-lg">Hooman Surname</span>
+                    <span className="ml-3 font-semibold text-lg">Pramod  Mahajan</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <ProfilePicture />
