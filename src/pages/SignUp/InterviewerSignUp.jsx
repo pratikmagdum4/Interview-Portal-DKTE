@@ -62,11 +62,11 @@ const InterviewerSignUp = () => {
                     </div>
                     <div>
                         <label htmlFor="idcard" className="block mb-2 text-white">ID Card:</label>
-                        <input type="file" id="idcard" className="w-full p-2 bg-white rounded cursor-pointer text-red-400" />
+                        <input type="file" id="idcard" className="w-full p-2 bg-zinc-700 rounded cursor-pointer text-red-400" />
                     </div>
                     <div>
                         <label htmlFor="days" className="block mb-2 text-white">Days Of Week You're Available:</label>
-                        <select id="days" className="w-full p-2 bg-zinc-700 rounded" multiple onChange={handleDayChange} defaultValue={['Monday']}>
+                        <select id="days" className="w-full p-2 bg-zinc-700 rounded text-white" multiple onChange={handleDayChange} defaultValue={['Monday']}>
                             <option>Monday</option>
                             <option>Tuesday</option>
                             <option>Wednesday</option>
