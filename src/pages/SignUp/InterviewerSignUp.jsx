@@ -2,6 +2,22 @@ import React, { useState } from 'react';
 import NavBar from '../NavBar/NavBar';
 import { interviewComposition } from '@/assets';
 import axios from 'axios';
+
+const CustomTimePicker = ({ value, onChange }) => {
+    const handleChange = (e) => {
+        onChange(e.target.value);
+    };
+
+    return (
+        <input
+            type="text"
+            value={value}
+            onChange={handleChange}
+            placeholder="HH:mm"
+            className="w-full p-2 bg-zinc-700 rounded text-white"
+        />
+    );
+};
 const InterviewerSignUp = () => {
     const links = [
         { label: 'Home', url: '/' },
@@ -119,25 +135,20 @@ const InterviewerSignUp = () => {
                         </select>
                     </div>
 
-                    {selectedDays.map((day, dayIndex) => (
-                        <div key={dayIndex}>
-                            {selectedTimes[day].map((time, index) => (
-                                <div key={index}>
+                    {selectedDays.map((day) => (
+                        <div key={day}>
+                            {formData.selectedTimes[day].map((time, index) => (
+                                <div key={`${day}-${index}`}>
                                     <label htmlFor={`start-time-${day}-${index}`} className="block mb-2 text-white">{day} Preferred Interview Start Time:</label>
-                                    <input
-                                        type="time"
-                                        id={`start-time-${day}-${index}`}
-                                        className="w-full p-2 bg-zinc-700 rounded text-white"
-                                        onChange={(e) => handleTimeRangeChange(e, day, index, 'start')}
-                                        value={selectedTimes[day][index].start || ''}
+                                    <CustomTimePicker
+                                        value={time.start}
+                                        onChange={(newValue) => handleTimeRangeChange(day, index, 'start', newValue)}
+                                        className="text-black"
                                     />
                                     <label htmlFor={`end-time-${day}-${index}`} className="block mb-2 text-white">{day} Preferred Interview End Time:</label>
-                                    <input
-                                        type="time"
-                                        id={`end-time-${day}-${index}`}
-                                        className="w-full p-2 bg-zinc-700 rounded text-white"
-                                        onChange={(e) => handleTimeRangeChange(e, day, index, 'end')}
-                                        value={selectedTimes[day][index].end || ''}
+                                    <CustomTimePicker
+                                        value={time.end}
+                                        onChange={(newValue) => handleTimeRangeChange(day, index, 'end', newValue)}
                                     />
                                 </div>
                             ))}
