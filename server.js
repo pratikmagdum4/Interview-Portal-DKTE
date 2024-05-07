@@ -1,46 +1,36 @@
-import express from 'express';
-import bodyParser from 'body-parser';
+import express  from 'express';
+import Razorpay  from 'razorpay';
 import cors from 'cors';
-
 const app = express();
+const port = 3000;
 
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+const razorpay = new Razorpay({
+  key_id: 'rzp_test_F6j4fjoQXNFwPB',
+  key_secret: 'O08MJgzR31S7egRP6t0FtlOf',
+});
+app.use(cors({
+  origin: 'http://localhost:5173' // Replace with your frontend origin
+}));
+// Route to create a Razorpay order
+app.post('/createOrder', async (req, res) => {
+  const amount = 50000; // Amount in paisa (10000 paisa = ₹100)
+  const currency = 'INR';
 
-app.post('/submit-form', (req, res) => {
-    // Extract form data from the request body
-    const { name, email, phone, idcard, selectedTimes } = req.body;
+  const options = {
+    amount,
+    currency,
+    receipt: 'order_receipt',
+    payment_capture: 1,
+  };
 
-    // Log all the received data, including selected days and their times
-    console.log('Received form data:');
-    console.log('Name:', name);
-    console.log('Email:', email);
-    console.log('Phone:', phone);
-    console.log('ID Card:', idcard);
-    console.log('Selected Times:');
-      Object.keys(selectedTimes).forEach(day => {
-        console.log(`${day}:`);
-        selectedTimes[day].forEach(time => {
-            console.log(`Start: ${time.start}, End: ${time.end}`);
-        });
-    });
-    // selectedTimes.forEach(({ day, times }) => {
-    //     console.log('Day:', day);
-    //     console.log('Times:');
-    //     times.forEach(({ start, end }) => {
-    //         console.log('Start:', start);
-    //         console.log('End:', end);
-    //     });
-    // });
-
-    // Here you can process the form data as needed (e.g., store in a database)
-
-    // Send a response back to the client
-    res.status(200).json({ message: 'Form submitted successfully!' });
+  try {
+    const order = await razorpay.orders.create(options);
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

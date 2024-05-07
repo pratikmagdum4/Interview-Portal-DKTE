@@ -90,11 +90,13 @@
 {
     .StudentHome{
         flex-direction: column;
-        
+        /* margin-left: 2rem; */
         /* display: block; */
     }
     .but1{
-        margin-left: 4px;
+        /* margin-left: 1rem; */
+        /* width: 14rem; */
+        /* padding-left: 1rem; */
     }
 }
 
@@ -104,5 +106,14 @@
         flex-direction: column;
          space-x-16: 0; /* Reset any spacing set on larger screens */
          space-y-4: 1rem; 
+    }
+}
+
+@media (max-width:600px){
+    .interviewSignup{
+       margin-left: 80px;
+       display: block;
+       justify-content: start;
+       padding: 40px;
     }
 }

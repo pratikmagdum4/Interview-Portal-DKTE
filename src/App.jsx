@@ -6,6 +6,7 @@ import Home from './pages/Home/Home'
 import SignUpPage from './pages/SignUp/SignUpPage.jsx';
 import StudentLogin from './pages/Login/StudentLogin.jsx';
 import AdminLogin from './pages/Login/AdminLogin';
+import AdminSchedules from './pages/AdminPages/AdminSchedules';
 import StudentSignUp from './pages/SignUp/StudentSignUp.jsx';
 import AdminSignUp from './pages/SignUp/AdminSignUp.jsx';
 import Students from './pages/AdminPages/Students';
@@ -18,7 +19,7 @@ import InterviewerSignUp from './pages/SignUp/InterviewerSignUp';
 import InterviewerLogin from './pages/Login/InterviewerLogin';
 import InterviewerIntervieweSchedules from './pages/InterviewerPages/InterviewSchedules';
 import Schedule from './components/ui/Schedules';
-
+import InterviwerPorfile from './pages/InterviewerPages/interviewerProfile';
 function App() {
  
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/signup/student" element={<StudentSignUp />} />
           <Route path="/signup/admin" element={<AdminSignUp />} />
           <Route path="/login/admin/students" element={<Students />} />
+          <Route path="/login/admin/adminschedules" element={<AdminSchedules />} />
           <Route path="/login/admin/interviewschedules" element={<AdminInterviewSchedule />} />
           <Route path="/StudentHome" element={<StudentHome />} />
           <Route path="/login/student/profile" element={<UserProfile />} />
@@ -41,6 +43,7 @@ function App() {
           <Route path="/Schedule" element={<Schedule />} />
           <Route path="/login/interviewer" element={<InterviewerLogin />} />
           <Route path="/login/interviewer/schedules" element={<InterviewerIntervieweSchedules />} />
+          <Route path="/login/interviewer/profile" element={<InterviwerPorfile />} />
         </Routes>
       </Router>
     </>
