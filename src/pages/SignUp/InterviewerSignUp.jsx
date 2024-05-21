@@ -6,25 +6,64 @@ import { InterviewerNavLinks } from '@/components/variables/formVariables';
 import { ToastContainer, toast } from 'react-toastify'; // Make sure to import toast from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import '@/App.css';
-
+import { capitalize } from 'lodash'; // Import lodash capitalize function
+import { useNavigate } from 'react-router';
+import { interviewerSignUp } from '@/api/index'; // Import interviewerSignUp function from the API file
+import { useDispatch } from 'react-redux';
+import { authenticate, setUserInfo } from '@/redux/authSlice'
 const InterviewerSignUp = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [userExists, setUserExists] = useState(false); 
+
     const [selectedDays, setSelectedDays] = useState([]);
     const [selectedTimes, setSelectedTimes] = useState({});
-
+    const [fileData, setFileData] = useState({});
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: '',
         password: '',
         profession: '',
-        idcard: '',
+        freeday: '',
+        startTime: '',
+        endTime: '',
+
+
     });
+
+    const handleRemoveFile = (fieldName) => {
+        setFileData((prevState) => {
+            const updatedFileData = { ...prevState };
+            delete updatedFileData[fieldName];
+            return updatedFileData;
+        });
+    };
+    const handleFileChange = (e) => {
+        if (e) {
+            const { name, files } = e.target;
+            setFormData((prevState) => ({
+                ...prevState,
+                idCard: files[0],
+            }));
+        } else {
+
+            setFormData((prevState) => ({
+                ...prevState,
+                idCard: null,
+            }));
+        }
+    };
 
     const handleTimeRangeChange = (e, day, field) => {
         const newSelectedTimes = { ...selectedTimes };
         newSelectedTimes[day][field] = e.target.value;
+        // const capitalizedDay = capitalize(day);
         setSelectedTimes(newSelectedTimes);
-        setFormData(prevState => ({ ...prevState, selectedTimes: newSelectedTimes }));
+        setFormData(prevState => ({ ...prevState, freeday: day }));
+        setFormData(prevState => ({ ...prevState, startTime: newSelectedTimes[day]['start'] }));
+        setFormData(prevState => ({ ...prevState, endTime: newSelectedTimes[day]['end'] }));
+
     };
 
     //to display time in time boxes
@@ -42,22 +81,30 @@ const InterviewerSignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        
-        if (!Object.values(formData).every(value => value !== '')) {
-            // toast.error('Please fill in all fields!', { position: toast.POSITION.TOP_CENTER });
-            showToast("Please fill all the fields");
+        const formDataToSend = new FormData();
 
-            return;
-        }
-
+        Object.keys(formData).forEach((key) => {
+            formDataToSend.append(key, formData[key]);
+        });
+        console.log("fomrdata is ", formData)
         try {
-            const formDataToSend = new FormData();
-            Object.keys(formData).forEach(key =>{
-                formDataToSend.append(key,formData[key]);
-            })
-            const response = await axios.post('http://localhost:5000/submit-form', formDataToSend);
-            console.log(response.data);
+
+            const response = await interviewerSignUp(formDataToSend);
+            const { data, token } = response.data;
+            const { id: interviewerId, name, role, day, startTime, endTime } = data;
+            const interviewerAuthToken = token;
+
+            localStorage.setItem("interviewerId", interviewerId);
+            localStorage.setItem("interviewerAuthToken", interviewerAuthToken);
+            if (response.data) {
+                dispatch(authenticate(true));
+                dispatch(setUserInfo({ user: data, token, Uid: interviewerId, Name: name, Role: role, Day: day, StartTime: startTime, EndTime: endTime }));
+                navigate('/login/student/profile');
+            } else {
+                setUserExists(false);
+            }
             // toast.success('Signup Successful!', { position: toast.POSITION.TOP_CENTER });
+            navigate('/login/interviewer')
         } catch (error) {
             console.error('Error submitting form:', error);
             // toast.error('An error occurred while submitting the form!', { position: toast.POSITION.TOP_CENTER });
@@ -65,6 +112,16 @@ const InterviewerSignUp = () => {
     };
     const showToast = (message) => {
         toast.error(message);
+    };
+    const handleCombinedChange = (event) => {
+        handleFileChange(event);
+        // handleChange(event);
+    };
+    const handleDaysChange = (event) => {
+        const options = event.target.selectedOptions;
+        const values = Array.from(options, (option) => option.value);
+        setSelectedDays(values);
+        setFormData({ ...formData, idCard: event.target.value });
     };
 
     return (
@@ -96,21 +153,38 @@ const InterviewerSignUp = () => {
                     </div>
                     <div>
 
-                        <label htmlFor="idcard" className="block mb-2 text-white">ID Card:</label>
-                        <input type="file" id="idcard" className="mt-1 block w-full text-sm  file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-yellow-500 file:text-black hover:file:bg-yellow-600 hover:pointer text-white" onChange={(e) => setFormData({ ...formData, idcard: e.target.files[0] })} />
+                        <div>
+                            <label htmlFor="idcard" className="block mb-2 text-white">ID Card:</label>
+                            {fileData["idcard"] ? (
+                                <div className=''>
+                                    <span></span>
+                                    <span className='text-white'>{fileData["idcard"].name}</span>
+                                    <button onClick={() => handleRemoveFile("idcard")} className="ml-2 p-1 mx-auto  bg-yellow-500 text-black font-bold rounded-md hover:bg-yellow-600">Remove</button>
+                                </div>
+                            ) : (
+                                <input
+                                    type="file"
+                                    id="idcard"
+                                    name="idcard"
+                                    onChange={handleCombinedChange}
+                                    required
+                                    className="  file:h-10 file:rounded text-sm text-white file:border-0 file:text-sm file:font-semibold file:bg-yellow-500 file:text-black hover:file:bg-yellow-600"
+                                />
+                            )}
+                        </div>
                     </div>
                     <div>
                         <label htmlFor="days" className="block mb-2 text-white">Days Of Week You're Available:</label>
-                        <select id="days" className="w-full p-2 bg-zinc-700 rounded text-white" multiple onChange={(e) => setSelectedDays(Array.from(e.target.selectedOptions, option => option.value))} defaultValue={['Monday']}>
-                            <option>Monday</option>
-                            <option>Tuesday</option>
-                            <option>Wednesday</option>
-                            <option>Thursday</option>
-                            <option>Friday</option>
-                            <option>Saturday</option>
-                            <option>Sunday</option>
-                        </select>
-                    </div>
+<select id="days" className="w-full p-2 bg-zinc-700 rounded text-white" onChange={(e) => setSelectedDays(Array.from(e.target.selectedOptions, option => option.value))} defaultValue={['MON']}>
+    <option>MON</option>
+    <option>TUE</option>
+    <option>WED</option>
+    <option>THU</option>
+    <option>FRI</option>
+    <option>SAT</option>
+    <option>SUN</option>
+</select>
+</div>
 
                     {selectedDays.map((day) => (
                         <div key={day}>

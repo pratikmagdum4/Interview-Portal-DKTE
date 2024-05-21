@@ -3,53 +3,19 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { interviewComposition, NotVisibleEye, visibleEye } from '@/assets/';
-
-function LoginForm({ title, fields, formData, onSubmit }) {
-    // Use state to manage form data
-    const [formValues, setFormValues] = useState(formData);
+import { useNavigate } from 'react-router';
+function LoginForm({ title, fields, formData, formValues, onSubmit, handleChange, userExists }) {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-    const [userExists, setUserExists] = useState(true); // State variable to track user existence
-    const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
     const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
 
-    //  form input change
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        // Update formValues state to reflect the changes
-        setFormValues({ ...formValues, [name]: value });
-    };
-
-    // toggle password visibility
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
-
-    //  form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            //  Axios POST    
-            const response = await axios.post("http://localhost:5000/login", formValues);
-            console.log("Response from server:", response.data);
-            if (response.data.userExists) {
-                setUserExists(true);
-                //  success
-                console.log("Form values:", formValues);
-                toast.success('Login successful');
-                onSubmit(response.data);
-            } else {
-                setUserExists(false);
-            }
-        } catch (error) {
-            console.error("Error submitting form:", error);
-            //  error
-        }
-    };
-
-    // handle forgot password submission
     const handleForgotPasswordSubmit = async (e) => {
         e.preventDefault();
-        // Implement forgot password logic here
+
         console.log("Forgot Password email submitted:", forgotPasswordEmail);
         setShowForgotPassword(false);
         toast.success('Password reset instructions sent to your email');
@@ -58,10 +24,10 @@ function LoginForm({ title, fields, formData, onSubmit }) {
     return (
         <div>
             <ToastContainer position="top-center" autoClose={2000} />
-            <div className="flex justify-center items-center h-screen animate-slideFromBottom flex-col pt-40 space-y-10">
-                <div className="bg-zinc-800 p-8 rounded-lg w-96">
+            <div className="flex justify-center items-center h-screen animate-slideFromBottom flex-col pt-6 space-y-10">
+                <div className="bg-zinc-800 p-8 rounded-lg w-96 pt-6">
                     <h2 className="text-white text-2xl mb-6 border-b border-zinc-600 pb-2 flex justify-center" id="title">{title}</h2>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={onSubmit} className="">
                         {fields.map(field => (
                             <div key={field.name} className="mb-4 text-center">
                                 <label htmlFor={field.name} className="block text-white mb-2">{field.label}:</label>
@@ -106,6 +72,15 @@ function LoginForm({ title, fields, formData, onSubmit }) {
                                 Forgot Password?
                             </button>
                         </div>
+                        <div className='flex justify-center pt-6'>
+                            <button
+                                type="button"
+                                className="ml-2 text-lg text-yellow-500 hover:text-yellow-600 focus:outline-none"
+                                onClick={() => navigate('/signup')}
+                            >
+                                Register
+                            </button>
+                        </div>
                     </form>
                     {showForgotPassword && (
                         <form onSubmit={handleForgotPasswordSubmit}>
@@ -130,8 +105,9 @@ function LoginForm({ title, fields, formData, onSubmit }) {
                         </form>
                     )}
                 </div>
-                <img src={interviewComposition} alt="" />
+
             </div>
+            <img src={interviewComposition} alt="" />
         </div>
     );
 }
