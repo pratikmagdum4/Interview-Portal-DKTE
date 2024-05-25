@@ -52,15 +52,15 @@ const ProfileDetailsForm = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();  // Corrected this line
+        e.preventDefault();  
         try {
             const response = await fetch(`http://localhost:3000/api/v1/auth/students/${stdId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`  // Corrected this line
+                    Authorization: `Bearer ${token}` 
                 },
-                body: JSON.stringify(formData)  // Corrected this line
+                body: JSON.stringify(formData) 
             });
             if (response.ok) {
                 alert('Profile details updated successfully!');
@@ -202,13 +202,14 @@ const UpdateResume = () => {
         try {
             const formData = new FormData();
             formData.append('resume', resumeFile);
-            console.log("The foprmdata os ", resumeFile)
-            const response = await fetch(`http://localhost:3000/api/v1/auth/student/${stdId}/upload`, resumeFile, {
-                method:'PATCH',
+            console.log("The resumeFile os ", resumeFile)
+            console.log("The foprmdata os ", formData)
+            const response = await fetch(`http://localhost:3000/api/v1/auth/students/${stdId}/upload`, {
+                method: 'PATCH',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}` 
-                }
+                    Authorization: `Bearer ${token}`
+                },
+                body: formData
             });
             if (response.status === 200) {
                 alert('Resume upload successful');
