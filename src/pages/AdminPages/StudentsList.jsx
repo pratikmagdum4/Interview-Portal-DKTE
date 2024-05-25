@@ -129,11 +129,13 @@ function StudentsList() {
                         filteredStudents2.map(student => (
                             
                             <div key={student.id} className="bg-white p-4 rounded-lg shadow-md mb-4">
-                                {isSmallScreen ? <> <div className="flex items-center justify-between space-x-4 py-2 border-b border-zinc-200 h-6" id="student-card">
+                                {isSmallScreen ? <> <div className="flex items-center justify-between space-x-4 py-8 border-b border-zinc-200 h-6" id="student-card">
                                     <div className="flex items-center space-x-2">
                                         <img src={MaleUser} alt="Profile" className="rounded-full h-6" />
                                         <div className='flex '>
-                                            <p className="font-semibold pr-2 mx-2">{student.name}</p>
+                                            <div className=''>
+                                                <p className="font-semibold pr-2 mx-2">{student.name}</p>
+                                            </div>
                                             <p className="text-sm text-zinc-600 mx-2">{student.PRN}</p>
                                             <p className="text-sm mx-2">{student.dept}</p>
                                         </div>
