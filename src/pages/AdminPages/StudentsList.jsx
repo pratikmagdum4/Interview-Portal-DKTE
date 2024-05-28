@@ -16,7 +16,7 @@ function StudentsList() {
     const [studentsData, setStudentsData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isSmallScreen,setIsSmallerScreen] = useState(false);
+    const [isSmallScreen, setIsSmallerScreen] = useState(false);
 
     useEffect(() => {
         const checkScreenSize = () => {
@@ -32,7 +32,7 @@ function StudentsList() {
             setLoading(true);
             setError(null);
             try {
-                const response = await axios.get('http://localhost:3000/api/v1/auth/students/all', {
+                const response = await axios.get('https://dkte-interview-portal-api.vercel.app/api/v1/auth/students/all', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -56,7 +56,7 @@ function StudentsList() {
 
     const filteredStudents = studentsData.filter(student =>
         student.PRN?.includes(searchInput) &&
-        (selectedBranch === '' || student.dept === selectedBranch) 
+        (selectedBranch === '' || student.dept === selectedBranch)
         //&& (selectedClass === '' || student.class === selectedClass)
     );
 
@@ -69,11 +69,7 @@ function StudentsList() {
     };
 
     // console.log("student data is ", studentsData);
-    const filteredStudents2 = [
-        {name:"pratik sunil magdum", PRN:"12345678", dept:"CSE", },
-        {name:"st1", PRN:"1234567890", dept:"CSE", class:"TY"},
-        {name:"st1", PRN:"1234567890", dept:"CSE", class:"TY"}
-    ]
+
     return (
         <>
             <NavBar links={AdminStudentsNavlinks} drop={true} isAdmin={true} />
@@ -123,19 +119,21 @@ function StudentsList() {
                     </div>
                 </div>
                 <div className="mt-20 bg-zinc-100">
-                    {filteredStudents2.length === 0 ? (
+                    {loading ? (
+                        <p>Loading students...</p>
+                    ) : error ? (
+                        <p className="text-red-500">{error}</p>
+                    ) : filteredStudents.length === 0 ? (
                         <p>No students found.</p>
                     ) : (
-                        filteredStudents2.map(student => (
-                            
+                        filteredStudents.map(student => (
+
                             <div key={student.id} className="bg-white p-4 rounded-lg shadow-md mb-4">
                                 {isSmallScreen ? <> <div className="flex items-center justify-between space-x-4 py-8 border-b border-zinc-200 h-6" id="student-card">
                                     <div className="flex items-center space-x-2">
                                         <img src={MaleUser} alt="Profile" className="rounded-full h-6" />
                                         <div className='flex '>
-                                            <div className=''>
-                                                <p className="font-semibold pr-2 mx-2">{student.name}</p>
-                                            </div>
+                                            <p className="font-semibold pr-2 mx-2">{student.name}</p>
                                             <p className="text-sm text-zinc-600 mx-2">{student.PRN}</p>
                                             <p className="text-sm mx-2">{student.dept}</p>
                                         </div>
@@ -143,17 +141,17 @@ function StudentsList() {
                                     <div className="flex items-center space-x-2">
                                         <p className="text-sm">{student.class}</p>
                                     </div>
-                                </div> 
-                                <div className='flex justify-center'>
+                                </div>
+                                    <div className='flex justify-center'>
                                         <button
                                             onClick={() => gotoSchedule(student)}
                                             className="bg-blue-500 text-white pb-1 mb-3 px-2 py-0.6 rounded h-auto w-auto " id="schedule-button"
                                         >
                                             Schedule meeting
                                         </button>
-                                </div>
-                                
-                                    </>: <div className="flex items-center justify-between space-x-4 py-2 border-b border-zinc-200 h-6" id="student-card">
+                                    </div>
+
+                                </> : <div className="flex items-center justify-between space-x-4 py-2 border-b border-zinc-200 h-6" id="student-card">
                                     <div className="flex items-center space-x-2">
                                         <img src={MaleUser} alt="Profile" className="rounded-full h-6" />
                                         <div className='flex '>
@@ -171,8 +169,8 @@ function StudentsList() {
                                     >
                                         Schedule meeting
                                     </button>
-                                </div> }
-                               
+                                </div>}
+
                             </div>
                         ))
                     )}
