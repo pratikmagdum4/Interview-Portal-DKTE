@@ -88,7 +88,7 @@ const InterviewerSignUp = () => {
         try {
 
             // const response = await interviewerSignUp(formDataToSend);
-            const response = await axios.post('https://dkte-interview-portal-api.vercel.app/interviewer/signup', formData, {
+            const response = await axios.post('http://dkte-interview-portal-api.vercel.app/interviewer/signup', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
