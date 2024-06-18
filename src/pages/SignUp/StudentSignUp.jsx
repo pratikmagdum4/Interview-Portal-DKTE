@@ -8,11 +8,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from "react-redux";
 import { authenticate, setUserInfo } from "@/redux/authSlice";
-
+import { studentSignUp } from "@/api";
+import Loader from "@/components/ui/loading";
 function StudentSignUp() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    const [loading,setLoading] = useState(false);
     const [stage, setStage] = useState(1);
     const [formData, setFormData] = useState({
         name: '',
@@ -33,18 +34,18 @@ function StudentSignUp() {
     };
 
     const handleSubmit = async (event) => {
+        setLoading(true);
         event.preventDefault();
 
         if (stage === 1) {
             setStage(2);
         } else if (stage === 2) {
             try {
-                const response = await axios.post('https://dkte-interview-portal-api.vercel.app/students/signup', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                const { data, token } = response.data;
+                
+                const response = await studentSignUp(formData)
+                console.log(response)
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                const { data, token } = response?.data;
                 const { id: studentId, name, role, PRN, dept } = data;
                 const stdAuthToken = token;
 
@@ -55,10 +56,11 @@ function StudentSignUp() {
                     const userData = { user: data, token: stdAuthToken, Uid: studentId, Name: name, Role: role, Dept: dept, PRN: PRN };
                     dispatch(authenticate(true));
                     dispatch(setUserInfo(userData));
-                    toast.success('Signup Successful!', { position: toast.POSITION.TOP_CENTER });
+                    toast.success('Signup Successful!');
                     navigate("/login/student");
                 }
             } catch (error) {
+                setLoading(false);
                 console.error("Error submitting form:", error);
                 showToast("Error submitting form. Please try again.");
             }
@@ -93,7 +95,7 @@ function StudentSignUp() {
         <>
             <NavBar links={StudentNavlinks} />
             <ToastContainer />
-            <CommonSignUp
+            {loading ? (<Loader />) : (<CommonSignUp
                 title="Student SignUp"
                 fields={stage === 1 ? stdFieldsStage1 : stdFieldsStage2}
                 onSubmit={handleSubmit}
@@ -108,7 +110,8 @@ function StudentSignUp() {
                 handleNext={handleNext}
                 handlePrev={handlePrev}
                 handleRemoveFile={handleRemoveFile}
-            />
+            />)}
+           
         </>
     );
 }

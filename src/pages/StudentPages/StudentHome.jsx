@@ -5,7 +5,10 @@ import { StudentHomeNavlinks } from '@/components/variables/formVariables';
 import Schedule from '@/components/ui/Schedules';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { selectAllUsers, selectCurrentToken } from '@/redux/authSlice';
+import { selectAllUsers, selectCurrentToken, selectCurrentUid } from '@/redux/authSlice';
+import { BASE_URL } from '@/api';
+import Loader from '@/components/ui/loading';
+
 const StudentHome = () => {
     const profileLink = 1
     const token = useSelector(selectCurrentToken);
@@ -15,22 +18,23 @@ const StudentHome = () => {
     const [stdLoading, setLoading] = useState(true);
     const [stdError, setError] = useState(null);
     const [isStudentSchedules, setIsStudentSchedules] = useState(true);
+    const [TimeOption,setTimeOption] = useState('today');
     const users = useSelector(selectAllUsers)
-    let studentId;
-    users.map((user, index) => {
-        if (user.token == token) {
-            studentId = user.Uid;
-        }
-    })
+    let studentId=useSelector(selectCurrentUid);
+    // users.map((user, index) => {
+    //     if (user.token == token) {
+    //         studentId = user.Uid;
+    //     }
+    // })
     useEffect(() => {
-        fetchInterviews('today');
+        fetchInterviews(TimeOption);
     }, []);
 
     const fetchInterviews = async (filterOption) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get(`https://dkte-interview-portal-api.vercel.app/api/v1/auth/interview/${studentId}/all?filter=${filterOption}`, {
+            const response = await axios.get(`${BASE_URL}/api/v1/auth/interview/${studentId}/all?filter=${filterOption}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -51,6 +55,7 @@ const StudentHome = () => {
     const handleFilterChange = async (option) => {
         try {
             await fetchInterviews(option);
+            setTimeOption(option);
         } catch (error) {
             console.error('Error fetching interviews:', error);
         }
@@ -59,19 +64,20 @@ const StudentHome = () => {
     return (
         <>
             <NavBar links={StudentHomeNavlinks} drop={drop} profileLink={profileLink} />
-            <div className="bg-zinc-100 h-screen">
+            {stdLoading ? (<Loader />) : (<div className="bg-zinc-100 h-screen">
                 <div className="flex h-screen">
                     {interviews !== null &&
                         <Schedule
                             interviews={interviews.data}
                             onFilterChange={handleFilterChange}
                             isStudentSchedules={true}
-                            // studentsInterviews={studentsInterviews }
+                            studentsInterviews={studentsInterviews }
                             stdLoading={stdLoading}
                             stdError={stdError} />
                     }
                 </div>
-            </div>
+            </div>)}
+            
         </>
     );
 };

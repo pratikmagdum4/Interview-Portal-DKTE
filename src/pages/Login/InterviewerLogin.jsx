@@ -8,9 +8,11 @@ import { InterviewerNavLinks, InterviewerLoginfields } from '@/components/variab
 import { interviewerLogin } from '@/api/index';
 import { useDispatch } from "react-redux";
 import { authenticate, setUserInfo } from "@/redux/authSlice";
+import Loader from '@/components/ui/loading';
 function InterviewerLogin() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [loading,setLoading] = useState(false);
     const [userExists, setUserExists] = useState(true); 
     const [formData, setFormData] = useState({
         email: "",
@@ -27,6 +29,7 @@ function InterviewerLogin() {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true)
         try {
             //  Axios POST    
             const response = await interviewerLogin(formValues); 
@@ -37,7 +40,6 @@ function InterviewerLogin() {
            
             localStorage.setItem("interviewerId", interviewerId);
             localStorage.setItem("interviewerAuthToken", interviewerAuthToken);
-           console.log("The response message",response.data)
             if (response.data) {
                 dispatch(authenticate(true));
                 dispatch(setUserInfo({ user: data, token, Uid: interviewerId, Name: name, Role: role, Day: freeday, StartTime: startTime, EndTime: endTime }));
@@ -49,10 +51,14 @@ function InterviewerLogin() {
             }
            
         } catch (error) {
-            if (error.response.data.msg === "User does not exist")
+            if (error.response.data.msg)
                 {
-                setUserExists(false)
+                setUserExists(false);
                 }
+
+            
+            setLoading(false);
+
             console.error("Error submitting form:", error.response.data.msg);
             //  error
         }
@@ -63,7 +69,7 @@ function InterviewerLogin() {
     return (
         <>
             <NavBar links={InterviewerNavLinks} />
-            <LoginForm
+            {(loading && userExists) ? (<Loader />) : (<LoginForm
                 title="Interviewer Login"
                 fields={InterviewerLoginfields}
                 formData={formData}
@@ -71,7 +77,8 @@ function InterviewerLogin() {
                 onSubmit={handleSubmit}
                 handleChange={handleChange}
                 userExists={userExists}
-            />
+            />)}
+            
         </>
     );
 }

@@ -6,10 +6,12 @@ import Schedule from '@/components/ui/Schedules';
 import { InterviewerProfileNavLinks } from '@/components/variables/formVariables';
 import { useSelector } from 'react-redux';
 import { selectCurrentToken, selectCurrentUid } from '@/redux/authSlice';
+import { BASE_URL } from '@/api';
 import axios from 'axios';
+import Loader from '@/components/ui/loading';
 const InterviewerIntervieweSchedules = () => {
     const token = useSelector(selectCurrentToken)
-
+const isAdmin = false;
     const drop = true;
     const profileLink = 2;
     const [interviewerLoading, setInterviewerLoading] = useState(true)
@@ -18,15 +20,16 @@ const InterviewerIntervieweSchedules = () => {
     const [isInterviewerInterviews, setIsInterviewerInterviews] = useState(true)
     const interviewerId = useSelector(selectCurrentUid);
 
+
     useEffect(() => {
         fetchInterviews('today');
     }, [])
     const fetchInterviews = async (filterOption) => {
-        setInterviewerError(true);
+        setInterviewerLoading(true);
         setInterviewerError(false);
 
         try {
-            const response = await axios.get(`https://dkte-interview-portal-api.vercel.app/api/v1/auth/interview/${interviewerId}/all?filter=${filterOption}`, {
+            const response = await axios.get(`${BASE_URL}/api/v1/auth/interview/${interviewerId}/all?filter=${filterOption}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -51,7 +54,9 @@ const InterviewerIntervieweSchedules = () => {
     return (
         <>
             <NavBar links={InterviewerProfileNavLinks} drop={drop} profileLink={profileLink} />
-            <div className="bg-zinc-100 h-screen">
+            {interviewerLoading? (<Loader/>
+            
+            ) : (<div className="bg-zinc-100 h-screen">
                 <div className="flex h-screen">
                     {interviewersInterviews !== null &&
                         <Schedule
@@ -61,10 +66,12 @@ const InterviewerIntervieweSchedules = () => {
                             stdLoading={interviewerLoading}
                             studentsInterviews={interviewersInterviews}
                             isStudentSchedules={false}
+                            isAdmin={isAdmin}
                         />
                     }
                 </div>
-            </div>
+            </div>)}
+            
         </>
     );
 };

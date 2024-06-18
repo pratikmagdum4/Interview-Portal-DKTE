@@ -4,10 +4,13 @@ import { useLocation, useNavigate } from 'react-router';
 import axios from 'axios';
 import { AdminSchedulesNavlinks, days } from '@/components/variables/formVariables';
 import { useSelector } from 'react-redux';
-import { selectAllUsers, selectCurrentToken } from '@/redux/authSlice';
-
+import { selectAllUsers, selectCurrentToken,selectCurrentUid } from '@/redux/authSlice';
+import { BASE_URL } from '@/api';
+import CustomAlert from '@/components/ui/CustomAlert';
 function AdminInterviewSchedule() {
     const token = useSelector(selectCurrentToken);
+    const facultyID=useSelector(selectCurrentUid);
+    console.log(facultyID)
     const navigate = useNavigate();
     const location = useLocation();
     const users = useSelector(selectAllUsers);
@@ -34,8 +37,11 @@ function AdminInterviewSchedule() {
     const [interviewers, setInterviewers] = useState([]);
     const [interviewID, setInterviewId] = useState('');
     const [interviewersToDisplay, setInterviewersToDisplay] = useState([])
-    let _id = student.id;
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
 
+    let _id = student.id;
+    console.log("The student id is",_id)
     const handleDateChange = (e) => {
         const selectedDate = e.target.value;
         setDate(selectedDate);
@@ -64,13 +70,23 @@ function AdminInterviewSchedule() {
             setIsTimeSet(true);
             setInterviewersToDisplay([]);
 
-            const data = interviewers.filter((interview) => {
-                return interview.startTime <= startedAt && interview.endTime >= endsAt;
-            });
+            if (interviewers && interviewers.length > 0) {
+                const data = interviewers.filter((interview) => {
+                    return interview.startTime <= startedAt && interview.endTime >= endsAt;
+                });
 
-            setInterviewersToDisplay(data);
+                setInterviewersToDisplay(data);
+            }
         }
     }, [isStartTimeSet, isEndTimeSet, startedAt, endsAt, interviewers]);
+    function onClose(){
+        navigate('/login/admin/students');
+    }
+
+    const closeAlert = () => {
+        setShowAlert(false);
+        navigate('/login/admin/students');
+    };
 
 
     useEffect(() => {
@@ -97,28 +113,32 @@ function AdminInterviewSchedule() {
         }
 
         try {
-            await axios.post(`https://dkte-interview-portal-api.vercel.app/api/v1/auth/interview/${_id}/schedule`, {
+            await axios.post(`${BASE_URL}/api/v1/auth/interview/${_id}/schedule`, {
                 dateString,
                 startedAt,
                 endsAt,
                 link,
-                _id, interviewID
+                _id, 
+                interviewID,
+                facultyID,
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            alert('Interview scheduled successfully!');
-            navigate('/login/admin/students');
+            setAlertMessage('Interview scheduled successfully!');
+            setShowAlert(true);
+            
         } catch (error) {
             console.error('Error scheduling interview:', error);
-            alert('Failed to schedule interview. Please try again later.');
+            setAlertMessage('Failed to schedule interview. Please try again later.');
+            setShowAlert(true);
         }
     };
 
     const fetchInterviewers = async (day) => {
         try {
-            const response = await axios.get(`https://dkte-interview-portal-api.vercel.app/api/v1/auth/interviewer/${day}/all`, {
+            const response = await axios.get(`${BASE_URL}/api/v1/auth/interviewer/${day}/all`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -136,14 +156,14 @@ function AdminInterviewSchedule() {
     const handleDayChange = async (day) => {
         setInterviewers([]);
         const data = await fetchInterviewers(day);
-
         setInterviewers(data);
-
     };
 
     return (
         <>
             <NavBar links={AdminSchedulesNavlinks} drop={true} isAdmin={true} />
+            {showAlert ?( <CustomAlert message={alertMessage} onClose={closeAlert} />):(
+
             <div className="text-white mb-10">
                 <div className="max-w-lg mx-auto mt-10 p-6 bg-zinc-800 rounded-lg">
                     <h1 className="text-xl font-bold mb-4 border-b border-zinc-600 pb-2">Schedule Interview</h1>
@@ -191,11 +211,15 @@ function AdminInterviewSchedule() {
                                     className="mt-1 block w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500"
                                 >
                                     <option value="">Select Interviewers</option>
-                                    {interviewersToDisplay.map((interviewer) => (
-                                        <option key={interviewer.id} value={interviewer.name}>
-                                            {interviewer.name}
-                                        </option>
-                                    ))}
+                                    {interviewersToDisplay.length === 0 ? (
+                                        <option disabled>No Interviewers are available</option>
+                                    ) : (
+                                        interviewersToDisplay.map((interviewer) => (
+                                            <option key={interviewer.id} value={interviewer.name}>
+                                                {interviewer.name}
+                                            </option>
+                                        ))
+                                    )}
                                 </select>
                             </div>
                         )}
@@ -227,7 +251,9 @@ function AdminInterviewSchedule() {
                     </div>
                 </div>
             </div>
+            )}
         </>
+        
     );
 }
 
