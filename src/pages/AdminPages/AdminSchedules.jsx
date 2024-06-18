@@ -83,7 +83,8 @@ const AdminSchedules = () => {
                             onFilterChange={handleFilterChange}
                             loading1={loading}
                             error={error}
-                        isAdmin={isAdmin}
+                            isAdmin={isAdmin}
+                            
                         />}
                 </div>
             </div>
