@@ -23,6 +23,9 @@ function StudentsList() {
     const [isSmallScreen, setIsSmallerScreen] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
 
+    if (window.innerWidth <= 640) {
+        setStudentsData(true);
+    }
     useEffect(() => {
         const checkScreenSize = () => {
             setIsSmallerScreen(window.innerWidth <= 640);
