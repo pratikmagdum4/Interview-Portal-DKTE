@@ -20,15 +20,15 @@ function StudentsList() {
     const [studentsData, setStudentsData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+   
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 640);
     const [isSticky, setIsSticky] = useState(false);
 
-   
     useEffect(() => {
         const checkScreenSize = () => {
             setIsSmallScreen(window.innerWidth <= 640);
         };
-        checkScreenSize();
+
         window.addEventListener("resize", checkScreenSize);
         return () => window.removeEventListener("resize", checkScreenSize);
     }, []);

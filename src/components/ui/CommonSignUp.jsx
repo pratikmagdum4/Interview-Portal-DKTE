@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import FormField from "./Formfield";
 import PaymentComponent from "./Payment";
 import SubmitButton from "./SubmitButton";
@@ -22,10 +22,12 @@ const CommonSignUp = ({
     showOtpInput,
     verifyOtp
 }) => {
-    const handleOtpNotSend = () =>{
-        alert("otp not sent");
-        return ;
-    }
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const handleOtpNotSend = () => {
+        alert("OTP not sent");
+    };
+
     const renderFormFields = () => {
         return fields.map((field) => (
             <FormField
@@ -37,6 +39,11 @@ const CommonSignUp = ({
                 handleRemoveFile={handleRemoveFile}
             />
         ));
+    };
+
+    const handleSubmit = () => {
+        setIsSubmitted(true);
+        onSubmit(); // Call the onSubmit function passed as prop
     };
 
     return (
@@ -66,15 +73,20 @@ const CommonSignUp = ({
                                         </button>
                                     )}
                                     {currentStage === 1 && !studentSignup && (
-
-                                        <SubmitButton label="SignUp" onSubmit={onSubmit} />
+                                        <SubmitButton
+                                            label="SignUp"
+                                            onSubmit={handleSubmit}
+                                            disabled={isSubmitted}
+                                        />
                                     )}
                                     {currentStage === 2 && studentSignup && (
                                         <>
-                                            {/* {!showOtpInput ? (<> <PrevButton onClick={handlePrev} />
-                                                <SubmitButton label="SignUp" onSubmit={onSubmit} /></>) : (<h1>{()=>handleOtpNotSend}</h1>)} */}
-                                                <PrevButton onClick={handlePrev} />
-                                                <SubmitButton label="SignUp" onSubmit={onSubmit} />
+                                            <PrevButton onClick={handlePrev} />
+                                            <SubmitButton
+                                                label="SignUp"
+                                                onSubmit={handleSubmit}
+                                                disabled={isSubmitted}
+                                            />
                                         </>
                                     )}
                                 </div>
